@@ -1,0 +1,32 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: hsl(200, 80%, 0%);
+}
+
+#canvasBody canvas {
+  cursor: none;
+  image-rendering: optimizeSpeed;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+  background: #000;
+}
+
+#ctrlPanel {
+	background: url('image/ctrlpanel1.png') no-repeat;
+	background-size: cover;
+}
+
+#ctrlPanel canvas {
+  max-width: 100%;
+}
+
+/* Bigger than 550 */
+@media (min-width: 550px) {
+
+  #ctrlPanel{
+    display:none;
+  }
+}
