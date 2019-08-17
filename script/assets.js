@@ -249,15 +249,13 @@
                  };
 
         this.accel = 70;  
-        var col = ['#880000','#ff0000'];
-        if(t==1){
-            col = ['#AF110E','#E7463B'];     
-            t=0;  
-        }
-        else if(t==2){
-            col = ['#555555','#999999'];
-            t=0;
-        }
+        // var cols = [
+        //     ['#E7463B','#F2E63C','#AF110E','#C4BA31'],
+        //     ['#BF6DAD','#A53720','#BF5698','#7F1E0B'],
+        //     ['#69b9c8','#855120','#2b8596','#784614']
+        // ];
+        var col = dCols[t];
+        t=0;
 
         this.ride ={on:null, a:0};//0 none, 1 before ride, 2 riding, 3 after ride
 

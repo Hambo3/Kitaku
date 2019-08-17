@@ -233,14 +233,13 @@
         this.intro = 0;
         this.level = level;
         this.aseq = (level==0);
-        var c1 = ['#880000','#ff0000'];
-        var c2 = ['#555555','#999999'];
+        var cols =  dCols;
         this.txt = [      
             [
                 {font:font[0], txt:"Kitaku", col:"#c10000"},
                 {txt:null},
-                {font:font[2], txt:"Tony, save your family"},
-                {font:font[2], txt:"bring them back home"},
+                {font:font[2], txt:"Tony, your friends have become lost, again."},
+                {font:font[2], txt:"You must save them and bring them back home"},
                 {txt:null},
                 {font:font[2], txt:"    [W]"},
                 {font:font[2], txt:"[A] [S] [D] / [arrow keys] Movement"}
@@ -250,7 +249,7 @@
                 {img: h1()}
             ],
             [
-                {font:font[1], txt:"bring them back home", col:"#c10000"},                
+                {font:font[1], txt:"bring them home", col:"#c10000"},                
                 {img: h2()}
             ],
             [
@@ -265,24 +264,24 @@
         
         this.lvlInfo = [
             [
-                {font:font[0], txt:"level one", col:"#c10000"},
-                {img: l1([Factory.Boy1(0,c1),Factory.Boy1(0,c1)])}
+                {font:font[0], txt:"level 1", col:"#c10000"},
+                {img: l1([Factory.Boy1(0,cols[0]),Factory.Boy1(0,cols[1])])}
             ],
             [
                 {font:font[0], txt:"Level 2", col:"#c10000"},
-                {img: l1([Factory.Boy1(0,c1), Factory.Boy1(0,c1), Factory.Boy1(0,c2), Factory.Boy1(0,c2)])}
+                {img: l1([Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0])])}
             ],
             [
                 {font:font[0], txt:"Congratulations", col:"#c10000"},
                 {txt:null},
                 {font:font[1], txt:"Your a real hero now", col:"#c10000"},
-                {font:font[1], txt:"[score]", col:"#c10000"}
+                {font:font[1], txt:"Score: [score]", col:"#c10000"}
             ],
             [
                 {font:font[0], txt:"Game Over", col:"#c10000"},
                 {txt:null},
                 {font:font[1], txt:"Everyone is disappointed in you Tony", col:"#c10000"},
-                {font:font[1], txt:"[score]", col:"#c10000"}
+                {font:font[1], txt:"Score: [score]", col:"#c10000"}
             ]    
         ];
 
@@ -291,69 +290,62 @@
         ]);     
 
         function l1(spr){
-            var cv = document.createElement("canvas");
-            var tr = helpbg(cv);
+            var tr = helpbg();
             var pt ={x:308,y:116};
             for(var i =0;i<spr.length;i++)
             {
-                tr.PolySprite(pt.x+(32*i), pt.y-(16*i), spr[i]);    
+                tr.r.PolySprite(pt.x+(32*i), pt.y-(16*i), spr[i]);    
             }
-            return cv;
+            return tr.c;
         }
 
         function h1(){
-            var cv = document.createElement("canvas");
-            var tr = helpbg(cv);
+            var tr = helpbg();
             var pt ={x:308,y:116};
-            tr.PolySprite(pt.x, pt.y, Factory.Man2() );
-            tr.PolySprite(pt.x, pt.y-60, Factory.Hat() );
-            tr.PolySprite(pt.x+192, pt.y-16, Util.FlipX(Factory.Boy1(0)) );
+            tr.r.PolySprite(pt.x, pt.y, Factory.Man2() );
+            tr.r.PolySprite(pt.x, pt.y-60, Factory.Hat() );
+            tr.r.PolySprite(pt.x+192, pt.y-16, Util.FlipX(Factory.Boy1(0)) );
 
-            return cv;
+            return tr.c;
         }
 
         function h2(){
-            var cv = document.createElement("canvas");
-            var tr = helpbg(cv);
-            tile(tr, 114, 144, 3,3, [Factory.Tile('#00FFFF',32)], 0,1);
+            var tr = helpbg(1);
             var pt ={x:244,y:116};
-            tr.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
-            tr.PolySprite(pt.x, pt.y-60, Factory.Hat() );
-            tr.PolySprite(pt.x+96, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
-            return cv;
+            tr.r.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
+            tr.r.PolySprite(pt.x, pt.y-60, Factory.Hat() );
+            tr.r.PolySprite(pt.x+96, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
+            return tr.c;
         }
 
         function h3(){
-            var cv = document.createElement("canvas");
-            var tr = helpbg(cv);
-            tile(tr, 114, 144, 3,3, [Factory.Tile('#00FFFF',32)], 0,1);
+            var tr = helpbg(1);
             var pt ={x:116,y:148};
-            tr.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
-            tr.PolySprite(pt.x, pt.y-60, Factory.Hat() );
+            tr.r.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
+            tr.r.PolySprite(pt.x, pt.y-60, Factory.Hat() );
 
-            tr.PolySprite(pt.x+96, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
-            tr.ImgText(22, scrs[0], pt.x+80, pt.y-112, 2, "rgba(255,0,0,1)");
-            return cv;
+            tr.r.PolySprite(pt.x+96, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
+            tr.r.ImgText(22, scrs[0], pt.x+80, pt.y-112, 2, "rgba(255,0,0,1)");
+            return tr.c;
         }
         
         function h4(){
-            var cv = document.createElement("canvas");
-            var tr = helpbg(cv);
-            tile(tr, 114, 144, 3,3, [Factory.Tile('#00FFFF',32)], 0,1);
+            var tr = helpbg(1);
             var pt ={x:116,y:148};
-            tr.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
-            tr.PolySprite(pt.x, pt.y-60, Factory.Hat() );
+            tr.r.PolySprite(pt.x, pt.y, Util.FlipX(Factory.Man1(0)) );
+            tr.r.PolySprite(pt.x, pt.y-60, Factory.Hat() );
 
-            tr.PolySprite(pt.x+64, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
-            tr.PolySprite(pt.x+128, pt.y, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
+            tr.r.PolySprite(pt.x+64, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
+            tr.r.PolySprite(pt.x+128, pt.y, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
 
-            tr.ImgText(22, scrs[0], pt.x+48, pt.y-112, 2, "rgba(255,0,0,1)");
-            tr.ImgText(22, scrs[1], pt.x+112, pt.y-96, 2, "rgba(255,0,0,1)");
-            return cv;
+            tr.r.ImgText(22, scrs[0], pt.x+48, pt.y-112, 2, "rgba(255,0,0,1)");
+            tr.r.ImgText(22, scrs[1], pt.x+112, pt.y-96, 2, "rgba(255,0,0,1)");
+            return tr.c;
         }
         
         
-        function helpbg(cv){
+        function helpbg(h){
+            var cv = document.createElement("canvas");
             cv.width = 600;
             cv.height = 200;
     
@@ -363,7 +355,8 @@
                 Factory.Tile('#69EA5D',32),
                 Factory.Tile('#61D856',32)                
             ], 1, 0);
-            return tr;
+            if(h)tile(tr, 114, 144, 3,3, [Factory.Tile('#00FFFF',32)], 0,1);
+            return {r:tr,c:cv};
         }
         
         function tile(tr,x1, y1, rs, cs, ts, pp, y2){
@@ -403,7 +396,7 @@
             }
 
             if(this.level <= this.max){
-                if(input.isDown('SPACE')){
+                if(input.isUp('SPACE')){
                     if(this.level == this.max)
                     {
                         this.gover = false;
