@@ -55,7 +55,7 @@ var map = {
 			features:{	plyrspawn:  {x:16,y:34},
 						doodspawn:[	
 							{x:22,y:9,t:0},
-							{x:38,y:31,t:0}
+							{x:38,y:31,t:1}
 							],
 						carhl:[],
 						carhr:[],

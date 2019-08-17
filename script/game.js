@@ -24,7 +24,7 @@
             Factory.Hole(['#328DC1','#4294C4'],32),
             Factory.Tile('#4294C4',32),
 
-            Factory.Tile('#4800FF',32)
+            Factory.Tile('#4294C4',32)
             ];    
 
         this.helpCt = 500;
@@ -32,20 +32,24 @@
         this.win;
         this.level = level;    
         this.isomode = true;
-        this.scene = new MapManager(map.size, map.levels[this.level], (this.isomode) ? isoTileSet: t2d, this.isomode);
+
+        var lv = map.levels[this.level];
+        this.scene = new MapManager(map.size, lv, (this.isomode) ? isoTileSet: t2d, this.isomode);
         this.assets = new ObjectPool(); 
         this.carSpawn = [];
         this.player;
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
-        var spawn = map.levels[this.level].features.plyrspawn;
+        
+        
+        var spawn = lv.features.plyrspawn;
         var tw = map.size.tile.width;
         var th = map.size.tile.height;
         this.player = new Player(spawn.x*tw, spawn.y*th);
         this.assets.Add(this.player);
-        this.tosave = map.levels[this.level].features.doodspawn.length;
+        this.tosave = lv.features.doodspawn.length;
 
         for (var i = 0; i < this.tosave; i++) {
-            spawn = map.levels[this.level].features.doodspawn[i];
+            spawn = lv.features.doodspawn[i];
             var d = new Dood(spawn.x*tw, spawn.y*th, spawn.t);
 
             d.target = this.player;
@@ -53,17 +57,17 @@
         }
 
         //mapped stumps
-        for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
-            spawn = map.levels[this.level].features.hard[i];
+        for (var i = 0; i < lv.features.hard.length; i++) {
+            spawn = lv.features.hard[i];
             var d = new Stump(spawn.x*tw, spawn.y*th);
             this.assets.Add(d);
         }
 
         //rnd stumps
-        for (var i = 0; i < 32; i++) {            
+        for (var i = 0; i < lv.st; i++) {            
             do{
-                spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
-                    y:Util.RndI(0, map.levels[this.level].dim.height)};
+                spawn = {x:Util.RndI(0, lv.dim.width),
+                    y:Util.RndI(0, lv.dim.height)};
                 var t = this.scene.Content(spawn.x*tw, spawn.y*th);
                 var tl = this.scene.Content((spawn.x-1)*tw, spawn.y*th);//check for close to water 13,14,15
                 var tr = this.scene.Content((spawn.x+1)*tw, spawn.y*th);
@@ -75,11 +79,11 @@
             this.assets.Add(d);
         }
 
-        AssetUtil.CarSpawn(this.carSpawn, map.levels[this.level].features.carhl, Const.actors.carhl, tw, th);
-        AssetUtil.CarSpawn(this.carSpawn, map.levels[this.level].features.carhr, Const.actors.carhr, tw, th);
-        AssetUtil.CarSpawn(this.carSpawn, map.levels[this.level].features.carvu, Const.actors.carvu, tw, th);
-        AssetUtil.CarSpawn(this.carSpawn, map.levels[this.level].features.carvd, Const.actors.carvd, tw, th);  
-        AssetUtil.CarSpawn(this.carSpawn, map.levels[this.level].features.boat, Const.actors.log, tw, th);   
+        AssetUtil.CarSpawn(this.carSpawn, lv.features.carhl, Const.actors.carhl, tw, th);
+        AssetUtil.CarSpawn(this.carSpawn, lv.features.carhr, Const.actors.carhr, tw, th);
+        AssetUtil.CarSpawn(this.carSpawn, lv.features.carvu, Const.actors.carvu, tw, th);
+        AssetUtil.CarSpawn(this.carSpawn, lv.features.carvd, Const.actors.carvd, tw, th);  
+        AssetUtil.CarSpawn(this.carSpawn, lv.features.boat, Const.actors.log, tw, th);   
     };
 
     Game.prototype = {
@@ -128,6 +132,17 @@
 
             var doods = this.assets.Get([Const.actors.dood]);
 
+            for(var e = 0; e < doods.length; e++) 
+            {
+                for(var f = 0; f < doods.length; f++) 
+                {
+                    if(doods[e] != doods[f] && doods[e].hold == 0 && doods[f].hold == 0){
+                        if(doods[e].x == doods[f].x && doods[e].y == doods[f].y){
+                            doods[e].hold = 90;
+                        }
+                    }
+                } 
+            } 
             var h = doods.filter(d=>d.status == Const.game.status.home);
 
             if( this.wincnt > 0 ){
@@ -207,7 +222,7 @@
             
             //scores n stuff
             Renderer.DrawBox(0, 0, this.screen.w, 32, 'rgba(0,0,0,0.6)');
-            Renderer.Text("P:"+plyrScore, 32, 24, Const.game.h2, "#fff");
+            Renderer.Text("score:"+plyrScore, 32, 24, Const.game.h2, "#fff");
         }
     };
 
@@ -234,9 +249,11 @@
         this.level = level;
         this.aseq = (level==0);
         var cols =  dCols;
+        var fcc = ["#b5af00","#f00","#c10000","#999"];
+        this.fc = fcc;
         this.txt = [      
             [
-                {font:font[0], txt:"Kitaku", col:"#c10000"},
+                {font:font[0], txt:"Kitaku", col:this.fc[0]},
                 {txt:null},
                 {font:font[2], txt:"Tony, your friends have become lost, again."},
                 {font:font[2], txt:"You must save them and bring them back home"},
@@ -245,43 +262,43 @@
                 {font:font[2], txt:"[A] [S] [D] / [arrow keys] Movement"}
             ],
             [
-                {font:font[1], txt:"find your friends", col:"#c10000"},             
+                {font:font[1], txt:"find your friends"},             
                 {img: h1()}
             ],
             [
-                {font:font[1], txt:"bring them home", col:"#c10000"},                
+                {font:font[1], txt:"bring them home"},                
                 {img: h2()}
             ],
             [
-                {font:font[1], txt:"one at a time", col:"#c10000"},                
+                {font:font[1], txt:"one at a time"},                
                 {img: h3()}
             ],
             [
-                {font:font[1], txt:"or altogether", col:"#c10000"},                
+                {font:font[1], txt:"or altogether"},                
                 {img: h4()}
             ]          
         ];
         
         this.lvlInfo = [
             [
-                {font:font[0], txt:"level 1", col:"#c10000"},
+                {font:font[0], txt:"level 1"},
                 {img: l1([Factory.Boy1(0,cols[0]),Factory.Boy1(0,cols[1])])}
             ],
             [
-                {font:font[0], txt:"Level 2", col:"#c10000"},
-                {img: l1([Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0])])}
+                {font:font[0], txt:"Level 2"},
+                {img: l1([Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[0]), Factory.Boy1(0,cols[1]), Factory.Boy1(0,cols[2])])}
             ],
             [
-                {font:font[0], txt:"Congratulations", col:"#c10000"},
+                {font:font[0], txt:"Congratulations"},
                 {txt:null},
-                {font:font[1], txt:"Your a real hero now", col:"#c10000"},
-                {font:font[1], txt:"Score: [score]", col:"#c10000"}
+                {font:font[1], txt:"Your a real hero now"},
+                {font:font[1], txt:"Score: [score]"}
             ],
             [
-                {font:font[0], txt:"Game Over", col:"#c10000"},
+                {font:font[0], txt:"Game Over"},
                 {txt:null},
-                {font:font[1], txt:"Everyone is disappointed in you Tony", col:"#c10000"},
-                {font:font[1], txt:"Score: [score]", col:"#c10000"}
+                {font:font[1], txt:"Everyone is disappointed in you Tony"},
+                {font:font[1], txt:"Score: [score]"}
             ]    
         ];
 
@@ -325,7 +342,7 @@
             tr.r.PolySprite(pt.x, pt.y-60, Factory.Hat() );
 
             tr.r.PolySprite(pt.x+96, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
-            tr.r.ImgText(22, scrs[0], pt.x+80, pt.y-112, 2, "rgba(255,0,0,1)");
+            tr.r.ImgText(22, scrs[0], pt.x+80, pt.y-112, 2, fcc[1]);
             return tr.c;
         }
         
@@ -338,8 +355,8 @@
             tr.r.PolySprite(pt.x+64, pt.y-16, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
             tr.r.PolySprite(pt.x+128, pt.y, Util.Scale(Util.FlipX(Factory.Man1(0)),0.7) );
 
-            tr.r.ImgText(22, scrs[0], pt.x+48, pt.y-112, 2, "rgba(255,0,0,1)");
-            tr.r.ImgText(22, scrs[1], pt.x+112, pt.y-96, 2, "rgba(255,0,0,1)");
+            tr.r.ImgText(22, scrs[0], pt.x+48, pt.y-112, 2, fcc[1]);
+            tr.r.ImgText(22, scrs[1], pt.x+112, pt.y-96, 2, fcc[1]);
             return tr.c;
         }
         
@@ -427,7 +444,7 @@
             Renderer.Clear(this.screen.w, this.screen.h);
 
             for(var i =0;i<this.chars.length;i++){
-                Renderer.ImgText(16, this.chars[i], (10+(i*16))*12, 0, 12, "#F00"); 
+                Renderer.ImgText(16, this.chars[i], (16+(i*16))*12, 0, 12, this.fc[2]); 
             }
 
             if(this.gover){
@@ -446,16 +463,16 @@
                 }
             }
 
-            Renderer.Text("Press [START]", 20, this.screen.h - 32, this.fnt[1], '#999999');
+            Renderer.Text("Press [START]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
         },
         Screen: function(ct){
-            var y = 200;
+            var y = 260;
             for(var i = 0; i < ct.length; i++){    
-                var x = 100;               
+                var x = 200;               
                 if(ct[i].txt){
                     var t = ct[i].txt;
                     t = t.replace("[score]",plyrScore);
-                    Renderer.Text(t, x, y, ct[i].font, ct[i].col || "#b5af00");
+                    Renderer.Text(t, x, y, ct[i].font, ct[i].col || this.fc[0]);
                 }
                 if(ct[i].img){
                     Renderer.Image(ct[i].img, 100, 300);
