@@ -33,7 +33,7 @@
         this.ride ={on:null, a:0};
         this.help = null;
         
-        this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.6)', this.width) ];        
+        this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.3)', this.width) ];        
         this.body= [
             Factory.Man2(0),
             Util.FlipX(Factory.Man1(0)),            
@@ -264,7 +264,7 @@
         this.status = Const.game.status.lost;
 
         this.target = null;
-        this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.7)', this.width) ]; 
+        this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.3)', this.width) ]; 
  
         this.action = Const.actions.up;
 

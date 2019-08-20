@@ -42,21 +42,22 @@ var Rendering = function (context, screen, border) {
         ctx.closePath();
         ctx.fill();
     }
-
+    function inBounds(x, y){
+        return (!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) ); 
+    }
     return {
         Clear: function(w,h,x,y){
             ctx.clearRect(x||0, y||0, w, h);
         },
         PolyTile: function(x, y, plane){
-            if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) ) {
+            if(inBounds(x,y)) {
                 side(x, y, plane);
                 return 1;
             }
             return 0;
         },
         PolySprite: function(x, y, poly){
-            if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) )
-            {  
+            if(inBounds(x,y)) {
                 polygon(x, y, poly);    
                 return 1;
             }

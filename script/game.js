@@ -292,12 +292,14 @@
                 {font:font[0], txt:"Congratulations"},
                 {txt:null},
                 {font:font[1], txt:"Your a real hero now"},
+                {txt:null},
                 {font:font[1], txt:"Score: [score]"}
             ],
             [
                 {font:font[0], txt:"Game Over"},
                 {txt:null},
                 {font:font[1], txt:"Everyone is disappointed in you Tony"},
+                {txt:null},
                 {font:font[1], txt:"Score: [score]"}
             ]    
         ];
