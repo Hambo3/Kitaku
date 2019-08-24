@@ -94,7 +94,7 @@
                     if(this.carSpawn[i].type ==  Const.actors.log){
                         var x = this.carSpawn[i].x;
                         var y =  this.carSpawn[i].y;
-                        for (var p = 0; p < 3; p++) {
+                        for (var p = 0; p < Util.RndI(2,4); p++) {
                             var c = new Log(x, y );
                             this.assets.Add(c);
                             y-=32;
@@ -132,23 +132,23 @@
 
             var doods = this.assets.Get([Const.actors.dood]);
 
-            for(var e = 0; e < doods.length; e++) 
-            {
-                for(var f = 0; f < doods.length; f++) 
-                {
-                    if(doods[e] != doods[f] && doods[e].hold == 0 && doods[f].hold == 0){
-                        if(doods[e].x == doods[f].x && doods[e].y == doods[f].y){
-                            doods[e].hold = 90;
-                        }
-                    }
-                } 
-            } 
+            // for(var e = 0; e < doods.length; e++) 
+            // {
+            //     for(var f = 0; f < doods.length; f++) 
+            //     {
+            //         if(doods[e] != doods[f] && doods[e].hold == 0 && doods[f].hold == 0){
+            //             if(doods[e].x == doods[f].x && doods[e].y == doods[f].y){
+            //                 doods[e].hold = 90;
+            //             }
+            //         }
+            //     } 
+            // } 
             var h = doods.filter(d=>d.status == Const.game.status.home);
 
             if( this.wincnt > 0 ){
                 this.wincnt--;
                 if( this.wincnt == 0 )  {
-                    this.titleScreen(this.win, doods.length - h.length);
+                    this.titleScreen(this.win, (this.tosave - doods.length));
                 }
             }
             else
@@ -181,7 +181,7 @@
                                 var d1 = Math.abs(Util.Dist(this.player.x, n[i].x, this.player.y, n[i].y));
                                 if(d1<d){
                                     d=d1;
-                                    if(d>460){
+                                    if(d>400){
                                         this.player.help = {d:AssetUtil.Dir(n[i], this.player),t:1,c:new N(30,5)};
                                     }
                                 }
@@ -244,7 +244,7 @@
         this.fnt = font;
         this.max = 2;
         this.gover = over;
-        this.lost = lost;
+        this.lost = "";
         this.time = 320;
         this.intro = 0;
         this.level = level;
@@ -252,6 +252,26 @@
         var cols =  dCols;
         var fcc = ["#b5af00","#f00","#c10000","#999"];
         this.fc = fcc;
+        if(lost > 0){
+            var ps = ["Graham","Trevor","Colin","Martin","Geoff"];
+            //this.lost 
+
+            var x = "";
+            if(lost==1){
+                x = Util.OneOf(ps)+ " ";
+            }
+            else{
+                for(var s = 0; s<lost; s++){                                
+                    if(s==lost-1){
+                        x+="and ";
+                    }
+                    x+=ps[s]+ " ";
+                }
+            }
+
+            this.lost = x + Util.OneOf(["didn't make it", "was lost"]);
+        }
+
         this.txt = [      
             [
                 {font:font[0], txt:"Kitaku", col:this.fc[0]},
@@ -471,35 +491,13 @@
             Renderer.Text("Press [START]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
         },
         Screen: function(ct){
-            var l = this.lost;
-            var ps = ["Graham","Trevor","Colin","Martin","Geoff"];
             var y = 260;
             for(var i = 0; i < ct.length; i++){    
                 var x = 200;               
                 if(ct[i].txt){
                     var t = ct[i].txt;
                     t = t.replace("[score]",plyrScore);
-                    if(l==0){
-                        t = t.replace("[lost]","");
-                    }
-                    else{
-                        t = t.replace("[lost]",function(){
-                            var x = "";
-                            if(l==1){
-                                x = Util.OneOf(ps)+ " ";
-                            }
-                            else{
-                                for(var s = 0; s<l; s++){                                
-                                    if(s==l-1){
-                                        x+="and ";
-                                    }
-                                    x+=ps[s]+ " ";
-                                }
-                            }
-
-                            return x + "didn't make it";
-                        });
-                    }
+                    t = t.replace("[lost]",this.lost);
                     
                     Renderer.Text(t, x, y, ct[i].font, ct[i].col || this.fc[0]);
                 }

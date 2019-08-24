@@ -123,7 +123,7 @@
                         }
                         else{
                             this.ride = {on:null, a:0};
-                            var c = gameAsset.scene.Cell(this.x, this.y, 16);
+                            var c = gameAsset.scene.Cell(this.x, this.y, 32);
                             this.x = c.x;
                             this.y = c.y;
                         }
