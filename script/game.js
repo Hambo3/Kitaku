@@ -148,7 +148,7 @@
             if( this.wincnt > 0 ){
                 this.wincnt--;
                 if( this.wincnt == 0 )  {
-                    this.titleScreen(this.win);
+                    this.titleScreen(this.win, doods.length - h.length);
                 }
             }
             else
@@ -198,9 +198,9 @@
                 }
             }       
 
-            if(input.isUp('ESC')){
-                this.titleScreen(false);
-            }
+            // if(input.isUp('ESC')){
+            //     this.titleScreen(false);
+            // }
             input.Clr();
         },
         Render: function(){   
@@ -231,7 +231,7 @@
 
 
 (function() {
-    function Title(map, gamestart, level, over) {
+    function Title(map, gamestart, level, over, lost) {
         this.screen = {w:map.screen.width*map.tile.width,
                         h:map.screen.height*map.tile.height}; 
         this.startGame = gamestart;
@@ -244,7 +244,8 @@
         this.fnt = font;
         this.max = 2;
         this.gover = over;
-        this.time = 240;
+        this.lost = lost;
+        this.time = 320;
         this.intro = 0;
         this.level = level;
         this.aseq = (level==0);
@@ -266,7 +267,7 @@
                 {img: h1()}
             ],
             [
-                {font:font[1], txt:"bring them home"},                
+                {font:font[1], txt:"bring them back"},                
                 {img: h2()}
             ],
             [
@@ -293,14 +294,16 @@
                 {txt:null},
                 {font:font[1], txt:"Your a real hero now"},
                 {txt:null},
-                {font:font[1], txt:"Score: [score]"}
+                {font:font[1], txt:"Score: [score]"},
+                {font:font[1], txt:"[lost]"}
             ],
             [
                 {font:font[0], txt:"Game Over"},
                 {txt:null},
                 {font:font[1], txt:"Everyone is disappointed in you Tony"},
                 {txt:null},
-                {font:font[1], txt:"Score: [score]"}
+                {font:font[1], txt:"Score: [score]"},
+                {font:font[1], txt:"[lost]"}
             ]    
         ];
 
@@ -468,12 +471,36 @@
             Renderer.Text("Press [START]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
         },
         Screen: function(ct){
+            var l = this.lost;
+            var ps = ["Graham","Trevor","Colin","Martin","Geoff"];
             var y = 260;
             for(var i = 0; i < ct.length; i++){    
                 var x = 200;               
                 if(ct[i].txt){
                     var t = ct[i].txt;
                     t = t.replace("[score]",plyrScore);
+                    if(l==0){
+                        t = t.replace("[lost]","");
+                    }
+                    else{
+                        t = t.replace("[lost]",function(){
+                            var x = "";
+                            if(l==1){
+                                x = Util.OneOf(ps)+ " ";
+                            }
+                            else{
+                                for(var s = 0; s<l; s++){                                
+                                    if(s==l-1){
+                                        x+="and ";
+                                    }
+                                    x+=ps[s]+ " ";
+                                }
+                            }
+
+                            return x + "didn't make it";
+                        });
+                    }
+                    
                     Renderer.Text(t, x, y, ct[i].font, ct[i].col || this.fc[0]);
                 }
                 if(ct[i].img){

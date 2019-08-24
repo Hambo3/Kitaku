@@ -21,7 +21,7 @@ var Renderer;
 var level = 0;
 var plyrScore = 0;
 var highScore = 0;
-
+var souls=0;
 var dCols = [
 	['#E7463B','#F2E63C','#AF110E','#C4BA31'],
 	['#BF6DAD','#A53720','#BF5698','#7F1E0B'],
@@ -176,14 +176,16 @@ function init()
 function GameStart(lv){
 	if(lv==0){
 		plyrScore=0;
+		souls=0;
 	}
 	level = (lv==null) ? level : lv;
 	gameAsset = new Game(map, TitleScreen, level);
 }
 
-function TitleScreen(alive){
+function TitleScreen(alive, lost){
+	souls+=lost;
 	level = (alive) ? level+1 : 0;
-	gameAsset = new Title(map.size, GameStart, level, !alive);
+	gameAsset = new Title(map.size, GameStart, level, !alive, souls);
 
 }
 
