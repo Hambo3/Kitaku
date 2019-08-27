@@ -1,5 +1,5 @@
 var AssetUtil = {
-    Dir: function(perp, prot){
+    Dir: function(perp, prot){      //calc direction and movemnt towards
         var inp = {
             up: false,
             down: false,
@@ -56,7 +56,7 @@ var AssetUtil = {
 
         return null;
     },
-    InputLogic: function(inp, prop, speed, step){
+    InputLogic: function(inp, prop, speed, step){       //determine action from input
         var x = prop.x;
         var y = prop.y;
         var dx = prop.dx;
@@ -94,7 +94,7 @@ var AssetUtil = {
             }
         }
     },
-    HopLogic: function(asset, step, ht){
+    HopLogic: function(asset, step, ht){        //everyone hops so create a reusable hop function
         if(asset.dy > 0){
             if(asset.y > asset.dest.y){
                 asset.y = asset.dest.y;
@@ -137,7 +137,7 @@ var AssetUtil = {
         }
         return gameAsset.scene.Content(asset.x, asset.y);
     },
-    CarSpawn: function(list, assets, type, tw, th){
+    CarSpawn: function(list, assets, type, tw, th){     //adds a spawn point of a type
         for (var i = 0; i < assets.length; i++) {
             list.push({ready:100, 
                 x:assets[i].x*tw, 
@@ -176,15 +176,15 @@ var Util = {
     PDist: function(x, y){        
         return Math.sqrt(x*x + y*y);
     },
-    IsoPoint: function(x, y)
+    IsoPoint: function(x, y)        //turns a 2d to iso point
     {
         return {x: (x - y) * 1, y: (x + y)*0.5};
     },
-    Arc: function(i, items, radius)
+    Arc: function(i, items, radius)     
     {
         return (radius * Math.sin( Math.PI * i / items));
     },
-    FlipX: function(src)
+    FlipX: function(src) //flips a factory item
     {
         var poly = src;
         for (let p = 0; p < poly.length; p++) {
@@ -194,7 +194,7 @@ var Util = {
         }
         return poly;
     },
-    Scale: function(src, sc)
+    Scale: function(src, sc)    //scales a factory item
     {
         var poly = src;
         for (let p = 0; p < poly.length; p++) {
@@ -205,7 +205,7 @@ var Util = {
         }
         return poly;
     },
-    ImgTxtArr:function(t){
+    ImgTxtArr:function(t){      //constructs an image from compressed data
         var ch =[];
         for (var i = 0; i < t.length; i++){
             var px=[];
@@ -219,7 +219,7 @@ var Util = {
         return ch;
     }
 }
-
+// a quick and dirty function to help with call outs
 var N = function (t,n){
     var ct = t;
     var i = 0;
@@ -238,6 +238,7 @@ var N = function (t,n){
 };
 
 // a v simple object pooler
+//only gets enabled assets and adds new ones into disabled slot or adds to list
 var ObjectPool = function () {
     var list = [];
 
@@ -303,6 +304,7 @@ var Const = {
     }
 }
 
+//all my assets are gotten from the asset factory
 var Factory = {
     Cube: function (col, size){
         var half = size/2;

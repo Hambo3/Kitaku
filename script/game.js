@@ -64,7 +64,7 @@
         //mapped stumps
         for (var i = 0; i < lv.features.hard.length; i++) {
             spawn = lv.features.hard[i];
-            var d = new Stump(spawn.x*tw, spawn.y*th);
+            var d = new Feature(spawn.x*tw, spawn.y*th, Const.actors.stump,0,0,0);
             this.assets.Add(d);
         }
 
@@ -80,7 +80,7 @@
                 var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );
                
             }while(t > 1 || tl>12 || tr>12 || dz.length != 0);
-            var d = new Stump(spawn.x*tw, spawn.y*th);
+            var d = new Feature(spawn.x*tw, spawn.y*th, Const.actors.stump,32,0,0);
             this.assets.Add(d);
         }
 
@@ -100,7 +100,7 @@
                         var x = this.carSpawn[i].x;
                         var y =  this.carSpawn[i].y;
                         for (var p = 0; p < Util.RndI(2,4); p++) {
-                            var c = new Log(x, y );
+                            var c = new Feature(x, y, Const.actors.log,12,2,1);
                             this.assets.Add(c);
                             y-=32;
                         }
@@ -136,6 +136,18 @@
             this.scene.ScrollTo(this.player.x, this.player.y);
 
             var doods = this.assets.Get([Const.actors.dood]);
+            //while were here check for doods on same space
+            for(var e = 0; e < doods.length; e++) 
+            {
+                for(var f = 0; f < doods.length; f++) 
+                {
+                    if(doods[e] != doods[f] && doods[e].hold == 0 && doods[f].hold == 0){
+                        if(doods[e].x == doods[f].x && doods[e].y == doods[f].y){
+                            doods[e].hold = 120;
+                        }
+                    }
+                } 
+            }  
 
             var h = doods.filter(d=>d.status == Const.game.status.home);
 
@@ -249,8 +261,6 @@
         this.fc = fcc;
         if(lost > 0){
             var ps = ["Graham","Trevor","Colin","Martin","Geoff"];
-            //this.lost 
-
             var x = "";
             if(lost==1){
                 x = Util.OneOf(ps)+ " ";

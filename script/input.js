@@ -3,7 +3,6 @@
     var pressedKeys = {};
     var releasedKeys = {};
     var keyUpevent;
-    var touchEvent;
 
     function pressed(e, status) {
         var k = setKey(e, status);
@@ -40,25 +39,7 @@
         }
         return key;
     }
-    function touchMove(e) {
-        if (e.touches) {
-            for (var i = 0; i < e.touches.length; i++) {
-                var touch = e.touches[i];
-                var tx = touch.pageX;// - canvas.offsetLeft;
-                var ty = touch.pageY;// - canvas.offsetTop;
 
-                if (touchEvent) {
-                    touchEvent(tx, ty);
-                }
-            }
-            e.preventDefault();
-        }   
-    }
-
-    function touchEnd(e) {
-        released(e, true);
-        pressedKeys = {};
-    }
     document.addEventListener('keydown', function(e) {
         pressed(e, true);
     });
@@ -88,19 +69,6 @@
         },
         Clr: function() {
             releasedKeys = [];
-        },
-        set: function (key) {
-            pressedKeys[key] = true;
-            if (keyUpevent) {
-                keyUpevent(key);
-            }
-        },
-        initTouch: function (el, handler) {
-            touchEvent = handler;
-            el.addEventListener("touchstart", touchMove);
-            el.addEventListener("touchmove", touchMove);
-            el.addEventListener("touchend", touchEnd);
-            el.addEventListener("touchcancel", touchEnd);
         }
     };
 })();

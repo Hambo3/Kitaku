@@ -10,7 +10,7 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
 
     var tileset = set;
 
-    function unpack(zip){
+    function unpack(zip){       //un compresses a map into a normalised array
         var map = [];
         var v, pts;
         var sec = zip.split("|");
@@ -31,13 +31,13 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
 
         return map;
     }
-    function hpoint(p, w){
+    function hpoint(p, w){      //work out the horizontal and vert point in 2d array
         return Math.floor(p / w);
     }		
     function vpoint(p, h){
         return Math.floor(p / h);
     }
-    function cell(x, y){
+    function cell(x, y){        //what cell am i on in 2d array
         var h = hpoint(x, mapSize.tile.width);
         var v = vpoint(y, mapSize.tile.height);
         var p = h + (v * mapWidth);
@@ -49,20 +49,12 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
     }               
     function render(level) {
         var sz = {w:mapSize.screen.width*mapSize.tile.width, h: mapSize.screen.height*mapSize.tile.height};
-
-        // Renderer.Clear(sz.w, sz.h);
-        
         var m = 0;
         var p;
 
         var mcols = mapWidth;
-        var col = mapSize.screen.width+1;
-        var row = mapSize.screen.height+1;
-
-        if(isomode){   
-            col = mapSize.iso.width;
-            row = mapSize.iso.height;
-        }
+        var  col = mapSize.iso.width;
+        var row = mapSize.iso.height;
 
         var tc=0;
         for(var r = 0; r < row; r++) 
@@ -71,15 +63,8 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
             {
                 m = ((r+scroll.yoffset) * mcols) + (c+scroll.xoffset);
                 p = map[m];
-                var pt;
-
-                if(isomode){
-                    pt = Util.IsoPoint( (c * mapSize.tile.width) + scroll.x + offset.x, 
-                        (r * mapSize.tile.height) + scroll.y + offset.y);
-                }else{
-                    pt = {x:(c * mapSize.tile.width) + scroll.x+offset.x, 
-                        y:(r * mapSize.tile.height) + scroll.y+offset.y};
-                }                       
+                var pt = Util.IsoPoint( (c * mapSize.tile.width) + scroll.x + offset.x, 
+                    (r * mapSize.tile.height) + scroll.y + offset.y);                    
                   
                 if(tileset[p].length){
                     tc+=Renderer.PolySprite(

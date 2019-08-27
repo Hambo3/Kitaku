@@ -49,7 +49,7 @@ var Rendering = function (context, screen, border) {
         Clear: function(w,h,x,y){
             ctx.clearRect(x||0, y||0, w, h);
         },
-        PolyTile: function(x, y, plane){
+        PolyTile: function(x, y, plane){        //ony renders if visible
             if(inBounds(x,y)) {
                 side(x, y, plane);
                 return 1;

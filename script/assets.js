@@ -666,77 +666,48 @@
     window.Drone = Drone;
 })();
 
-//Stump - feature item
+//an object like a rock or tree or can by animated like alog
 (function() {
-
-    function Stump(x, y) {
-        this.type = Const.actors.stump;
+    function Feature(x, y, type, sz, accel, max) {
+        this.type = type;
         this.enabled = true;
 
         this.x = x;
         this.y = y;
         this.z = 0;
-        this.width = 32;
-        this.length = 32;
+        this.width =  sz;
+        this.length = sz;
 
         this.dx = 0;
         this.dy = 0; 
         this.dz = 0;
-   
-        this.body = Util.OneOf([Factory.Rock1(),Util.FlipX(Factory.Rock1()), Factory.Rock(),Factory.Tree1(),Factory.Tree2()]);
-     
+        this.accel = accel;  
+        this.max = max;
+        this.body = (type == Const.actors.log) ? 
+                    Factory.Log() :
+                    Util.OneOf([Factory.Rock1(),Util.FlipX(Factory.Rock1()), Factory.Rock(),Factory.Tree1(),Factory.Tree2()]);
+        ;
     };
 
-    Stump.prototype = {
+    Feature.prototype = {
         Logic: function(dt){
-        },
-        Update: function(dt){
-        },
-        Collider: function(perps){
-        },
-        Render: function(os){
-                var pt = Util.IsoPoint(this.x-os.x, this.y-os.y);
-                Renderer.PolySprite(pt.x, pt.y-this.z,  this.body);
-        }
-    };
+            if(this.type == Const.actors.log)
+            {
+                var speed = this.accel * dt;
 
-    window.Stump = Stump;
-})();
-
-//log- like a car but logic is limited
-(function() {
-    function Log(x, y) {
-        this.type = Const.actors.log;
-        this.enabled = true;
-
-        this.x = x;
-        this.y = y;
-        this.z = 0;
-        this.width = 12;
-        this.length = 12;
-
-        this.dx = 0;
-        this.dy = 0; 
-        this.dz = 0;
-        this.accel = 2;  
-        this.max = 1;
-        this.body = Factory.Log();
-    };
-
-    Log.prototype = {
-        Logic: function(dt){
-            var speed = this.accel * dt;
-
-            this.dy -= (this.dy > -this.max) ? speed : 0;  
-
-            var t = gameAsset.scene.Content(this.x, this.y);
+                this.dy -= (this.dy > -this.max) ? speed : 0;  
+    
+                var t = gameAsset.scene.Content(this.x, this.y);
                 if(map.colliders.fend.indexOf(t) != -1){  
                     this.enabled = false;
                 }
+            }
         },
         Update: function(dt){
-            this.x += this.dx;
-            this.y += this.dy;
+            if(this.type == Const.actors.log){
+                this.x += this.dx;
+                this.y += this.dy;
+            }
         },
         Collider: function(perps){
         },
@@ -746,7 +717,7 @@
         }
     };
 
-    window.Log = Log;
+    window.Feature = Feature;
 })();
 
 //an animated auxilary feature such as hat or splash
