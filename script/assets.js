@@ -60,6 +60,7 @@
             var speed = this.accel * dt;
 
             if(this.death == false){
+                //once initiated a move(jump) wait till landed to read next move
                 if(!this.jumping){
                     var inp = {
                                 up: this.ride.a != 2 && (input.isDown('UP') || input.isDown('W') ),
@@ -123,6 +124,7 @@
                         }
                         else{
                             this.ride = {on:null, a:0};
+                            //we need to reposition to the nearest tile when exiting a log so just do it for everything
                             var c = gameAsset.scene.Cell(this.x, this.y, 32);
                             this.x = c.x;
                             this.y = c.y;
@@ -137,6 +139,7 @@
 
         },
         Update: function(dt){
+            //update based on the position of the thing im riding on
             if(this.ride.a == 2){
                 this.x = this.ride.on.x;
                 this.y = this.ride.on.y;
@@ -204,6 +207,7 @@
                     }
                 }
 
+                //show call outs from doods
                 if(this.help != null){
                     var s = this.help.c.S();    
                     var d = this.help.d;   
@@ -230,7 +234,7 @@
     window.Player = Player;
 })();
 
-//dood
+//dood - a friend you rescue
 (function() {
 
     function Dood(x, y, t) {
@@ -374,6 +378,8 @@
                                     else{
                                         if(this.ride.a == 3){
                                         this.ride = {on:null, a:0};
+                                        //we need to reposition to the nearest tile when exiting a log so just do it for everything
+                                        //doods move in half tiles but round to nearest full for ease
                                         var c = gameAsset.scene.Cell(this.x, this.y,32);
                                         this.x = c.x;
                                         this.y = c.y;
@@ -474,7 +480,8 @@
     window.Dood = Dood;
 })();
 
-//car
+//car- a car is made of 2 objects for better depth logic.
+//so a front of car is here and its rear is a drone
 (function() {
 
     function Car(x, y, maxs, type) {
@@ -505,6 +512,7 @@
             ["#DA4938","#831816","#F16152"]
         ];
         this.color = this.cols[c];
+        //car definitions 
         var b = [Util.Scale( Factory.CarF(this.cols[c]) ,1),
                 Util.Scale( Factory.CarB(this.cols[c]) ,1),
                 Util.Scale( Util.FlipX(Factory.CarB(this.cols[c])) ,1),
@@ -574,7 +582,7 @@
             this.y += this.dy;
         },
         Collider: function(perps){
-            //predictive collison only with cars
+            //predictive collison only with cars, checking a few tiles ahead
             var d = AssetUtil.Collisions(this, perps, true);
 
             if(d && (d.type >= Const.actors.carhr && d.type <= Const.actors.drone)){
@@ -600,6 +608,7 @@
     window.Car = Car;
 })();
 
+//drone - a car rear end which only logic is to follow its parent
 (function() {
 
     function Drone(driver) {
@@ -694,6 +703,7 @@
     window.Stump = Stump;
 })();
 
+//log- like a car but logic is limited
 (function() {
     function Log(x, y) {
         this.type = Const.actors.log;
@@ -739,6 +749,7 @@
     window.Log = Log;
 })();
 
+//an animated auxilary feature such as hat or splash
 (function() {
     function AnimObj(x, y, c, b, q) {
         this.type = Const.actors.null;

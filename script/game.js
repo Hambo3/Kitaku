@@ -3,6 +3,7 @@
 
         this.titleScreen = titlescreen;
 
+        //tile definitions
         var isoTileSet = [ 
             Factory.Tile('#69EA5D',32),//grass
             Factory.Tile('#61D856',32),
@@ -34,13 +35,17 @@
         this.isomode = true;
 
         var lv = map.levels[this.level];
+
+        //scrolling and map rendering is managed by the mapmanager
         this.scene = new MapManager(map.size, lv, (this.isomode) ? isoTileSet: t2d, this.isomode);
+
+        //a simple object pool for all my objects
         this.assets = new ObjectPool(); 
         this.carSpawn = [];
         this.player;
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
         
-        
+        //initialise the asset positions and spawn points
         var spawn = lv.features.plyrspawn;
         var tw = map.size.tile.width;
         var th = map.size.tile.height;
@@ -69,9 +74,9 @@
                 spawn = {x:Util.RndI(0, lv.dim.width),
                     y:Util.RndI(0, lv.dim.height)};
                 var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-                var tl = this.scene.Content((spawn.x-1)*tw, spawn.y*th);//check for close to water 13,14,15
-                var tr = this.scene.Content((spawn.x+1)*tw, spawn.y*th);
-                var d = this.assets.Get([Const.actors.dood,Const.actors.stump]);
+                var tl = this.scene.Content((spawn.x-1)*tw, spawn.y*th);        //check for close to water 13,14,15
+                var tr = this.scene.Content((spawn.x+1)*tw, spawn.y*th);        //we want space next to water to be clear of obstructions
+                var d = this.assets.Get([Const.actors.dood,Const.actors.stump]);//for easy log exit    
                 var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );
                
             }while(t > 1 || tl>12 || tr>12 || dz.length != 0);
@@ -88,7 +93,7 @@
 
     Game.prototype = {
         Update: function(dt){
-            //spawn cars
+            //spawn cars etc
             for (var i = 0; i < this.carSpawn.length; i++) {
                 if(this.carSpawn[i].ready == 0){
                     if(this.carSpawn[i].type ==  Const.actors.log){
@@ -123,28 +128,18 @@
             for(var e = 0; e < asses.length; e++) 
             {
                 //do move
-                asses[e].Logic(dt);
-                asses[e].Collider(asses);
-                asses[e].Update(dt);
+                asses[e].Logic(dt);     //do logic
+                asses[e].Collider(asses);//check for collisions
+                asses[e].Update(dt);        //update positions
             }        
 
             this.scene.ScrollTo(this.player.x, this.player.y);
 
             var doods = this.assets.Get([Const.actors.dood]);
 
-            // for(var e = 0; e < doods.length; e++) 
-            // {
-            //     for(var f = 0; f < doods.length; f++) 
-            //     {
-            //         if(doods[e] != doods[f] && doods[e].hold == 0 && doods[f].hold == 0){
-            //             if(doods[e].x == doods[f].x && doods[e].y == doods[f].y){
-            //                 doods[e].hold = 90;
-            //             }
-            //         }
-            //     } 
-            // } 
             var h = doods.filter(d=>d.status == Const.game.status.home);
 
+            //determine level end
             if( this.wincnt > 0 ){
                 this.wincnt--;
                 if( this.wincnt == 0 )  {
@@ -229,7 +224,7 @@
     window.Game = Game;
 })();
 
-
+//title and ancilary screens
 (function() {
     function Title(map, gamestart, level, over, lost) {
         this.screen = {w:map.screen.width*map.tile.width,
@@ -245,7 +240,7 @@
         this.max = 2;
         this.gover = over;
         this.lost = "";
-        this.time = 320;
+        this.time = 400;
         this.intro = 0;
         this.level = level;
         this.aseq = (level==0);
@@ -279,8 +274,8 @@
                 {font:font[2], txt:"Tony, your friends have become lost, again."},
                 {font:font[2], txt:"You must save them and bring them back home"},
                 {txt:null},
-                {font:font[2], txt:"    [W]"},
-                {font:font[2], txt:"[A] [S] [D] / [arrow keys] Movement"}
+                {font:font[2], txt:"    [W]", col:this.fc[3]},
+                {font:font[2], txt:"[A] [S] [D] / [arrow keys] Movement", col:this.fc[3]}
             ],
             [
                 {font:font[1], txt:"find your friends"},             
@@ -315,6 +310,7 @@
                 {font:font[1], txt:"Your a real hero now"},
                 {txt:null},
                 {font:font[1], txt:"Score: [score]"},
+                {txt:null},
                 {font:font[1], txt:"[lost]"}
             ],
             [
@@ -323,6 +319,7 @@
                 {font:font[1], txt:"Everyone is disappointed in you Tony"},
                 {txt:null},
                 {font:font[1], txt:"Score: [score]"},
+                {txt:null},
                 {font:font[1], txt:"[lost]"}
             ]    
         ];
@@ -434,6 +431,7 @@
                 this.time = 240;
                 if(this.intro==this.txt.length){
                     this.intro = 0;
+                    this.time = 400;
                 }
             }
 
@@ -442,14 +440,14 @@
                     if(this.level == this.max)
                     {
                         this.gover = false;
-                        this.time = 240;
+                        this.time = 400;
                         this.intro = 0;
                         this.level = 0;
                         this.aseq = true;
                     }
                     else if(this.gover){
                         this.gover = false;
-                        this.time = 240;
+                        this.time = 400;
                         this.intro = 0;
                         this.level = 0;
                         this.aseq = true;
@@ -488,7 +486,7 @@
                 }
             }
 
-            Renderer.Text("Press [START]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
+            Renderer.Text("Press [SPACE]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
         },
         Screen: function(ct){
             var y = 260;
