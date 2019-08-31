@@ -3,6 +3,19 @@
 
         this.titleScreen = titlescreen;
 
+        this.doodets = Util.ImgTxtArr([
+            "@RR@@QQ@@RR@`ddD`ddD`ddD@D`@@AH@",             
+            "@RR@@QQ@@RR@hmmEhmmEhmmE@Eh@@AH@",           
+            "@RR@@QQ@@RR@X[[CX[[CX[[C@CX@@AH@",                                
+            "@vv@p@@FF@ppF@FpFp@pFF@pp@@F@vv@",
+            "@@@@@@@@x@xGGGx@@@@xG@"]);
+        //build compressed assets
+        Fac.push(Util.Build(Sources.tree1()));
+        Fac.push(Util.Build(Sources.tree2()));
+        Fac.push(Util.Build(Sources.rock()));
+        Fac.push(Util.Build(Sources.rock1()));
+        Fac.push(Util.Build(Sources.Log()));
+
         //tile definitions
         var isoTileSet = [ 
             Factory.Tile('#69EA5D',32),//grass
@@ -230,6 +243,18 @@
             //scores n stuff
             Renderer.DrawBox(0, 0, this.screen.w, 32, 'rgba(0,0,0,0.6)');
             Renderer.Text("score:"+plyrScore, 32, 24, Const.game.h2, "#fff");
+
+            var doods = this.assets.Get([Const.actors.dood, Const.actors.null]);
+            var sx = 600;
+            for(var e = 0; e < doods.length; e++) {
+                Renderer.IconText(8, this.doodets[doods[e].id], 760-(e*32), 4, 3); 
+
+                if(doods[e].status == Const.game.status.home || doods[e].type == Const.actors.null)
+                {
+                    Renderer.IconText(8, doods[e].status == Const.game.status.home ? this.doodets[4] : this.doodets[3], 760-(e*32), 4, 3); 
+                }
+
+            }   
         }
     };
 

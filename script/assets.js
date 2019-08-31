@@ -254,6 +254,7 @@
 
         this.accel = 70;  
         var col = dCols[t];
+        this.id = t;
         t=0;
 
         this.ride ={on:null, a:0};//0 none, 1 before ride, 2 riding, 3 after ride
@@ -684,8 +685,8 @@
         this.accel = accel;  
         this.max = max;
         this.body = (type == Const.actors.log) ? 
-                    Factory.Log() :
-                    Util.OneOf([Factory.Rock1(),Util.FlipX(Factory.Rock1()), Factory.Rock(),Factory.Tree1(),Factory.Tree2()]);
+                    Fac[4] :
+                    Util.OneOf([Fac[3],Util.FlipX(Fac[3]), Fac[2],Fac[0],Fac[1]]);
         ;
     };
 

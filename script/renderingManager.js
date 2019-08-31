@@ -84,6 +84,17 @@ var Rendering = function (context, screen, border) {
                 }
               }
             }
+        },
+        IconText: function(S, px, x, y, sc){
+            var C="000000f6bc7969dee2ee7777d761e0ff000453dd50";
+            for(j=0;j<S;j++){
+                for(i=0;i<S;i++){
+                  if(px[j*S+i]){
+                        ctx.fillStyle="#"+C.substr(6*(px[j*S+i]-1),6);
+                        ctx.fillRect(x+(i*sc),y+(j*sc),sc,sc);
+                    }
+                }
+            }
         }
     }
 };
