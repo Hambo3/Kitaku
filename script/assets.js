@@ -302,7 +302,7 @@
             if(this.death > 0){
                 this.death--;
                 if(this.death == 0){
-                    this.enabled = false;
+                    //this.enabled = false;
                 }
             }
             else{
