@@ -17,10 +17,10 @@ var step = 1 / fps;
 
 var gameAsset;
 var Renderer;
-
+var firstTime = true;
 var level = 0;
 var plyrScore = 0;
-var highScore = 0;
+
 var souls=0;
 //dood color pallete
 var dCols = [

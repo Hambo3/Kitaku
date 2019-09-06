@@ -267,7 +267,7 @@
         this.screen = {w:map.screen.width*map.tile.width,
                         h:map.screen.height*map.tile.height}; 
         this.startGame = gamestart;
-
+        
         var font = [
             "bold 48px Arial",
             "24px Arial",
@@ -464,6 +464,7 @@
             else{
                 this.intro++;
                 this.time = 240;
+                if(this.intro > 1){firstTime = false;}
                 if(this.intro==this.txt.length){
                     this.intro = 0;
                     this.time = 400;
@@ -471,7 +472,7 @@
             }
 
             if(this.level <= this.max){
-                if(input.isUp('SPACE')){
+                if(firstTime == false && input.isUp('SPACE')){
                     if(this.level == this.max)
                     {
                         this.gover = false;
@@ -521,7 +522,9 @@
                 }
             }
 
+            if(!firstTime){
             Renderer.Text("Press [SPACE]", 20, this.screen.h - 32, this.fnt[1], this.fc[3]);
+            }
         },
         Screen: function(ct){
             var y = 260;
